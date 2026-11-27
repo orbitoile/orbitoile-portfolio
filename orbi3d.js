@@ -1,7 +1,7 @@
 import * as THREE from 'https://esm.sh/three@0.170.0';
 
 const canvas = document.querySelector('#orbi3d');
-const sceneHost = document.querySelector('.orbit-scene');
+const sceneHost = document.querySelector('.intro-stage');
 if (canvas && sceneHost) {
   const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true, powerPreference: 'low-power' });
@@ -21,6 +21,8 @@ if (canvas && sceneHost) {
   const fill = new THREE.PointLight(0x68d9ff, 9, 10); fill.position.set(-4, -2, 4); scene.add(fill);
 
   const robot = new THREE.Group(); scene.add(robot);
+  robot.scale.setScalar(.055);
+  robot.position.set(-1.6, -.15, -5.5);
   const white = new THREE.MeshStandardMaterial({ color: 0xe7f0fb, metalness: .48, roughness: .27 });
   const whiteBright = new THREE.MeshStandardMaterial({ color: 0xffffff, metalness: .35, roughness: .2 });
   const dark = new THREE.MeshStandardMaterial({ color: 0x071326, metalness: .7, roughness: .2 });
@@ -111,12 +113,19 @@ if (canvas && sceneHost) {
     renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix();
   }
   const resizeObserver=new ResizeObserver(resize);resizeObserver.observe(sceneHost);
+  const introStart = performance.now();
   function animate(){
     if(!running||reduced)return;
     cancelAnimationFrame(frame);
     frame=requestAnimationFrame(animate);
     const t=performance.now()*.001;
-    robot.position.y=Math.sin(t*.8)*.07;
+    const arrival = Math.min(1, (performance.now()-introStart)/3400);
+    const eased = 1-Math.pow(1-arrival,3);
+    const targetScale = .92;
+    robot.scale.setScalar(.055 + (targetScale-.055)*eased);
+    robot.position.x = -1.65 + .12*eased;
+    robot.position.z = -5.5 + 5.5*eased;
+    robot.position.y = -.12 + (arrival > 1 ? Math.sin(t*.8)*.07 : Math.sin(t*.8)*.025);
     robot.rotation.y+=(pointer.x*.28-robot.rotation.y)*.035;
     robot.rotation.x+=(-pointer.y*.12-robot.rotation.x)*.035;
     halo.rotation.z=t*.08;
