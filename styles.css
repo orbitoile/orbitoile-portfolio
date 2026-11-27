@@ -7,3 +7,43 @@
 #orbi3d{position:absolute;z-index:3;inset:0;width:100%;height:100%;display:block;pointer-events:none}
 .orbit-scene:has(#orbi3d){isolation:isolate}
 @media(max-width:720px){#orbi3d{inset:0}.orbit-scene:has(#orbi3d){top:440px}}
+
+
+/* CINEMATIC INTRO — ORBITOILE */
+.cinematic-intro{position:fixed;inset:0;z-index:10000;overflow:hidden;background:radial-gradient(ellipse at 48% 42%,rgba(10,65,125,.42),transparent 36%),radial-gradient(ellipse at 18% 80%,rgba(0,66,145,.22),transparent 42%),linear-gradient(125deg,#020611 0%,#06142b 52%,#020817 100%);opacity:1;visibility:visible;transition:opacity 1.15s cubic-bezier(.7,0,.2,1),visibility 1.15s;isolation:isolate}
+.cinematic-intro:before,.cinematic-intro:after{content:"";position:absolute;inset:-20%;pointer-events:none}
+.cinematic-intro:before{opacity:.55;background-image:radial-gradient(1px 1px at 12% 18%,#fff 98%,transparent),radial-gradient(1px 1px at 72% 23%,#b8e4ff 98%,transparent),radial-gradient(2px 2px at 38% 66%,#fff 98%,transparent),radial-gradient(1px 1px at 88% 78%,#fff 98%,transparent),radial-gradient(1px 1px at 57% 47%,#8bcaff 98%,transparent);background-size:230px 190px,310px 260px,370px 310px,280px 230px,190px 170px;animation:introStars 35s linear infinite}
+.cinematic-intro:after{background:radial-gradient(ellipse at 50% 50%,transparent 35%,rgba(0,0,0,.42) 100%);z-index:8}
+.intro-nebula{position:absolute;inset:-15%;background:radial-gradient(ellipse at 48% 28%,rgba(0,113,220,.25),transparent 26%),radial-gradient(ellipse at 73% 52%,rgba(0,71,157,.2),transparent 31%),radial-gradient(ellipse at 22% 55%,rgba(0,126,255,.13),transparent 30%);filter:blur(28px);animation:nebulaDrift 12s ease-in-out infinite alternate}
+.intro-earth{position:absolute;width:min(78vw,1050px);aspect-ratio:1;border-radius:50%;right:-13%;bottom:-78%;opacity:0;transform:scale(.62);background:radial-gradient(circle at 29% 15%,#f7fdff 0%,#b7e5ff 1.2%,#398fd2 5%,#0d4c8c 19%,#082b55 43%,#04152d 66%,#010714 72%);box-shadow:inset 30px 35px 90px rgba(165,222,255,.45),0 -18px 65px rgba(52,163,255,.68),0 0 170px rgba(0,116,255,.35);animation:earthArrival 7.8s cubic-bezier(.18,.65,.25,1) forwards}
+.intro-earth:before{content:"";position:absolute;inset:0;border-radius:50%;background:repeating-linear-gradient(157deg,transparent 0 27px,rgba(218,245,255,.13) 29px,transparent 34px),radial-gradient(ellipse at 30% 20%,rgba(255,255,255,.75),transparent 19%);filter:blur(5px);mix-blend-mode:screen}
+.intro-earth-clouds{position:absolute;inset:0;border-radius:50%;background:repeating-linear-gradient(145deg,transparent 0 44px,rgba(225,243,255,.2) 47px,transparent 54px);filter:blur(9px);transform:rotate(-18deg)}
+.intro-earth-glow{position:absolute;left:8%;top:7%;width:80%;height:4px;border-radius:50%;background:#c9efff;box-shadow:0 0 18px 8px #46aaff,0 0 75px 28px rgba(0,130,255,.5);transform:rotate(-19deg)}
+.intro-orbit{position:absolute;width:68vw;height:26vw;left:-13%;top:30%;border:1px solid rgba(47,158,255,.5);border-radius:50%;transform:rotate(-23deg);box-shadow:0 0 22px rgba(0,126,255,.18);animation:orbitSweep 8s ease-in-out both}
+.intro-stage{position:absolute;z-index:3;inset:0;pointer-events:none}
+#orbi3d{position:absolute;inset:0;width:100%;height:100%;display:block}
+.intro-brand{position:absolute;z-index:5;left:5.2%;top:5.2%;font-size:clamp(15px,1.5vw,21px);font-weight:700;letter-spacing:.3em;color:#f4f8ff;opacity:0;animation:introFade .8s 1.1s forwards}
+.intro-brand-mark{display:inline-grid;place-items:center;margin-right:10px;color:#42baff;text-shadow:0 0 18px #078dff}
+.intro-caption{position:absolute;z-index:6;right:9%;top:27%;width:min(36vw,470px);opacity:0;transform:translateY(22px);animation:introCaption 1s 3.8s cubic-bezier(.2,.8,.2,1) forwards}
+.intro-overline{font:9px var(--mono);letter-spacing:.24em;color:#8dcfff}
+.intro-caption h2{font-size:clamp(58px,8vw,116px);line-height:.82;letter-spacing:-.085em;font-weight:500;margin:24px 0 22px}
+.intro-caption h2 em{font-style:normal;color:#54baff;text-shadow:0 0 38px rgba(0,145,255,.5)}
+.intro-caption p{font-size:13px;letter-spacing:.03em;color:#c2d7ee;line-height:1.7}
+.intro-location{position:absolute;z-index:6;right:5.2%;bottom:7%;opacity:0;animation:introFade .8s 5.2s forwards}
+.intro-skip{position:absolute;z-index:10;right:5.2%;top:5%;border:1px solid rgba(165,207,255,.35);background:rgba(4,17,37,.35);color:#c8dff8;padding:11px 15px;border-radius:30px;font:9px var(--mono);letter-spacing:.12em;cursor:pointer;backdrop-filter:blur(10px);transition:background .25s,border-color .25s}
+.intro-skip:hover{background:rgba(16,111,205,.25);border-color:#65c7ff}
+.intro-skip span{margin-left:13px;color:#65caff}
+.intro-progress{position:absolute;z-index:9;left:0;bottom:0;width:100%;height:2px;background:rgba(116,180,255,.12)}
+.intro-progress span{display:block;width:0;height:100%;background:linear-gradient(90deg,#087dff,#83e5ff);box-shadow:0 0 14px #168fff;animation:introProgress 7.8s linear forwards}
+body.intro-active{overflow:hidden}
+body.intro-active .robot{display:none}
+.cinematic-intro.is-leaving{opacity:0;visibility:hidden;pointer-events:none}
+@keyframes introStars{to{transform:translate3d(4%,2%,0)}}
+@keyframes nebulaDrift{to{transform:translate3d(2%,-2%,0) scale(1.08)}}
+@keyframes earthArrival{0%,24%{opacity:0;transform:scale(.62) translateY(8%)}48%{opacity:1}100%{opacity:1;transform:scale(1) translateY(0)}}
+@keyframes orbitSweep{0%{opacity:0;transform:rotate(-23deg) translateX(-10%)}30%,100%{opacity:1;transform:rotate(-23deg) translateX(0)}}
+@keyframes introFade{to{opacity:1}}
+@keyframes introCaption{to{opacity:1;transform:translateY(0)}}
+@keyframes introProgress{to{width:100%}}
+@media(max-width:700px){.intro-earth{width:130vw;right:-42%;bottom:-43%}.intro-stage{inset:4% -24% 0 -24%}.intro-caption{top:19%;left:8%;right:auto;width:80%}.intro-caption h2{font-size:clamp(54px,16vw,86px);margin:15px 0}.intro-caption p{max-width:250px;font-size:12px}.intro-brand{left:7%;top:5%;font-size:14px}.intro-skip{right:6%;top:4%;padding:9px 11px;font-size:8px}.intro-location{right:7%;bottom:5%;font-size:8px}.intro-orbit{width:120vw;height:50vw;left:-35%;top:42%}}
+@media(prefers-reduced-motion:reduce){.cinematic-intro:before,.intro-nebula,.intro-earth,.intro-orbit,.intro-progress span{animation:none}.intro-earth{opacity:1;transform:none}.intro-caption,.intro-brand,.intro-location{opacity:1;transform:none;animation:none}.cinematic-intro{transition:none}}
