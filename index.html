@@ -11,6 +11,7 @@
   <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
   <script defer src="app.js"></script>
+  <script type="module" src="orbi3d.js"></script>
 </head>
 <body>
   <canvas id="starfield" aria-hidden="true"></canvas>
@@ -51,7 +52,8 @@
         <div class="earth"><div class="earth-clouds"></div><div class="earth-lights"></div></div>
         <div class="orbital-ring ring-one"></div><div class="orbital-ring ring-two"></div>
         <div class="satellite sat-one"></div><div class="satellite sat-two"></div>
-        <div class="robot">
+        <canvas id="orbi3d" aria-label="ORBI, robot explorateur en trois dimensions"></canvas>
+        <div class="robot" hidden>
           <div class="robot-aura"></div>
           <div class="robot-ear ear-left"></div><div class="robot-ear ear-right"></div>
           <div class="robot-head"><div class="visor"><span class="eye eye-left"></span><span class="eye eye-right"></span><span class="smile"></span></div><div class="helmet-shine"></div></div>
