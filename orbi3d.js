@@ -156,18 +156,21 @@ if (canvas && sceneHost) {
     const elapsed=performance.now()-introStart;
     const p=Math.min(1,elapsed/duration);
     const ease=x=>x<.5?4*x*x*x:1-Math.pow(-2*x+2,3)/2;
-    const travel=ease(Math.min(1,p/.84));
-    const reveal=Math.max(0,Math.min(1,(p-.08)/.42));
-    // ORBI emerges from the dark, approaches the viewer, then leads the flight.
-    const robotScale=.018+(.68-.018)*ease(Math.min(1,p/.56));
+    const travel=ease(Math.min(1,p/.96));
+    const reveal=Math.max(0,Math.min(1,(p-.12)/.5));
+    // ORBI begins as a distant silhouette, then travels beside the camera toward Earth.
+    const robotScale=.018+(.42-.018)*ease(Math.min(1,p/.72));
     robot.scale.setScalar(robotScale);
-    robot.position.set(-2.2+1.15*travel,-.15+.12*Math.sin(p*8),-5.8+1.4*travel);
-    robot.rotation.y+=(pointer.x*.18-robot.rotation.y)*.025;
-    robot.rotation.x+=(-pointer.y*.08-robot.rotation.x)*.025;
+    robot.position.set(-2.2+.9*travel,-.15+.12*Math.sin(p*8),-5.8+1.0*travel);
+    robot.rotation.y+=(pointer.x*.12-robot.rotation.y)*.025;
+    robot.rotation.x+=(-pointer.y*.06-robot.rotation.x)*.025;
     halo.rotation.z=elapsed*.00012;
-    // The Earth grows naturally as the camera travels toward it.
-    camera.position.set(-.25+1.0*travel,.05-.15*travel,9.5-12.1*travel);
-    camera.lookAt(earthGroup.position.x*.35,0,-3.5);
+    // One continuous camera flight: the final frame is close enough for Earth to fill the view.
+    const cameraEnd = new THREE.Vector3(1.42,-.30,-3.48);
+    const cameraStart = new THREE.Vector3(0,0,9.5);
+    camera.position.copy(cameraStart).lerp(cameraEnd,travel);
+    const targetStart = new THREE.Vector3(0,0,-2.4);
+    camera.lookAt(targetStart.lerp(earthGroup.position,travel));
     earthGroup.rotation.y=-1.25+elapsed*.000035;
     clouds.rotation.y=elapsed*.000047;
     starField.rotation.y=elapsed*.000006;
