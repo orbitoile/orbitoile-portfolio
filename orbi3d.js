@@ -96,6 +96,43 @@ if (canvas && sceneHost) {
   const halo2 = new THREE.Mesh(new THREE.TorusGeometry(1.95,.005,8,128),new THREE.MeshBasicMaterial({color:0x68d9ff,transparent:true,opacity:.28}));
   halo2.position.set(0,.15,-.7); halo2.rotation.set(1.2,-.35,.2); robot.add(halo2);
 
+  // Photorealistic Earth layers, illuminated by a distant sun.
+  const textureLoader = new THREE.TextureLoader();
+  const earthGroup = new THREE.Group();
+  earthGroup.position.set(1.65,-.35,-7.2);
+  scene.add(earthGroup);
+  const earthGeo = new THREE.SphereGeometry(3.05,96,96);
+  const earthMat = new THREE.MeshPhongMaterial({color:0xffffff,specular:new THREE.Color(0x244b70),shininess:18});
+  const earth = new THREE.Mesh(earthGeo,earthMat);
+  earth.rotation.y = -1.25;
+  earthGroup.add(earth);
+  textureLoader.load('https://raw.githubusercontent.com/mrdoob/three.js/dev/examples/textures/planets/earth_atmos_2048.jpg', t=>{t.colorSpace=THREE.SRGBColorSpace;earthMat.map=t;earthMat.needsUpdate=true;});
+  textureLoader.load('https://raw.githubusercontent.com/mrdoob/three.js/dev/examples/textures/planets/earth_normal_2048.jpg', t=>{earthMat.normalMap=t;earthMat.normalScale.set(.55,.55);earthMat.needsUpdate=true;});
+  const cloudMat = new THREE.MeshPhongMaterial({color:0xffffff,transparent:true,opacity:.48,depthWrite:false});
+  const clouds = new THREE.Mesh(new THREE.SphereGeometry(3.085,80,80),cloudMat);
+  earthGroup.add(clouds);
+  textureLoader.load('https://raw.githubusercontent.com/mrdoob/three.js/dev/examples/textures/planets/earth_clouds_1024.png',t=>{cloudMat.map=t;cloudMat.alphaMap=t;cloudMat.needsUpdate=true;});
+  const atmosphere = new THREE.Mesh(new THREE.SphereGeometry(3.19,80,80),new THREE.ShaderMaterial({
+    vertexShader:`varying vec3 vNormal; void main(){vNormal=normalize(normalMatrix*normal);gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);}`,
+    fragmentShader:`varying vec3 vNormal; void main(){float rim=pow(1.0-max(dot(normalize(vNormal),vec3(0.0,0.0,1.0)),0.0),3.0);gl_FragColor=vec4(0.12,0.52,1.0,rim*.72);}`,
+    transparent:true,blending:THREE.AdditiveBlending,side:THREE.BackSide,depthWrite:false
+  }));
+  earthGroup.add(atmosphere);
+  const sun = new THREE.DirectionalLight(0xffe6c2,4.2); sun.position.set(-8,5,7); scene.add(sun);
+  const sunGlow = new THREE.PointLight(0x4caeff,38,28); sunGlow.position.set(-7,2,1); scene.add(sunGlow);
+
+  // Deep star field with subtle depth parallax.
+  const starCount = 2200, starPositions = new Float32Array(starCount*3), starSizes = new Float32Array(starCount);
+  for(let i=0;i<starCount;i++){starPositions[i*3]=(Math.random()-.5)*42;starPositions[i*3+1]=(Math.random()-.5)*25;starPositions[i*3+2]=-Math.random()*34-2;starSizes[i]=Math.random()*.8+.2;}
+  const starGeo = new THREE.BufferGeometry();starGeo.setAttribute('position',new THREE.BufferAttribute(starPositions,3));
+  const starField = new THREE.Points(starGeo,new THREE.PointsMaterial({color:0xc9e7ff,size:.035,transparent:true,opacity:.9,sizeAttenuation:true}));
+  scene.add(starField);
+  const dustGeo = new THREE.BufferGeometry(), dustPos=[];
+  for(let i=0;i<520;i++){dustPos.push((Math.random()-.5)*24,(Math.random()-.5)*14,-Math.random()*24);}
+  dustGeo.setAttribute('position',new THREE.Float32BufferAttribute(dustPos,3));
+  const dust = new THREE.Points(dustGeo,new THREE.PointsMaterial({color:0x238fff,size:.055,transparent:true,opacity:.55}));
+  scene.add(dust);
+
   const pointer = {x:0,y:0};
   if (matchMedia('(pointer:fine)').matches) {
     addEventListener('pointermove', e => {
@@ -105,32 +142,41 @@ if (canvas && sceneHost) {
     },{passive:true});
   }
   let frame=0, running=true;
-  const observer = new IntersectionObserver(entries=>{running=entries[0].isIntersecting;if(running&&!reduced)animate();});
-  observer.observe(sceneHost);
+  const introStart = performance.now();
+  const duration = 10800;
   function resize(){
     const w=sceneHost.clientWidth,h=sceneHost.clientHeight;
     if(!w||!h)return;
     renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix();
   }
   const resizeObserver=new ResizeObserver(resize);resizeObserver.observe(sceneHost);
-  const introStart = performance.now();
   function animate(){
-    if(!running||reduced)return;
-    cancelAnimationFrame(frame);
+    if(!running)return;
     frame=requestAnimationFrame(animate);
-    const t=performance.now()*.001;
-    const arrival = Math.min(1, (performance.now()-introStart)/3400);
-    const eased = 1-Math.pow(1-arrival,3);
-    const targetScale = .92;
-    robot.scale.setScalar(.055 + (targetScale-.055)*eased);
-    robot.position.x = -1.65 + .12*eased;
-    robot.position.z = -5.5 + 5.5*eased;
-    robot.position.y = -.12 + (arrival > 1 ? Math.sin(t*.8)*.07 : Math.sin(t*.8)*.025);
-    robot.rotation.y+=(pointer.x*.28-robot.rotation.y)*.035;
-    robot.rotation.x+=(-pointer.y*.12-robot.rotation.x)*.035;
-    halo.rotation.z=t*.08;
+    const elapsed=performance.now()-introStart;
+    const p=Math.min(1,elapsed/duration);
+    const ease=x=>x<.5?4*x*x*x:1-Math.pow(-2*x+2,3)/2;
+    const travel=ease(Math.min(1,p/.84));
+    const reveal=Math.max(0,Math.min(1,(p-.08)/.42));
+    // ORBI emerges from the dark, approaches the viewer, then leads the flight.
+    const robotScale=.018+(.68-.018)*ease(Math.min(1,p/.56));
+    robot.scale.setScalar(robotScale);
+    robot.position.set(-2.2+1.15*travel,-.15+.12*Math.sin(p*8),-5.8+7.5*travel);
+    robot.rotation.y+=(pointer.x*.18-robot.rotation.y)*.025;
+    robot.rotation.x+=(-pointer.y*.08-robot.rotation.x)*.025;
+    halo.rotation.z=elapsed*.00012;
+    // The Earth grows naturally as the camera travels toward it.
+    camera.position.set(-.25+1.0*travel,.05-.15*travel,9.5-12.1*travel);
+    camera.lookAt(earthGroup.position.x*.35,0,-3.5);
+    earthGroup.rotation.y=-1.25+elapsed*.000035;
+    clouds.rotation.y=elapsed*.000047;
+    starField.rotation.y=elapsed*.000006;
+    dust.rotation.z=elapsed*.000012;
+    sun.intensity=2.0+2.2*reveal;
     renderer.render(scene,camera);
+    if(p>=1){cancelAnimationFrame(frame);}
   }
-  if(reduced){renderer.render(scene,camera);}else{animate();}
+  if(reduced){camera.position.set(0,0,7);robot.scale.setScalar(.52);robot.position.set(-1.5,0,1);renderer.render(scene,camera);}
+  else animate();
   document.addEventListener('visibilitychange',()=>{running=!document.hidden;if(running&&!reduced)animate();});
 }
