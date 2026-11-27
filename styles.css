@@ -47,3 +47,16 @@ body.intro-active .robot{display:none}
 @keyframes introProgress{to{width:100%}}
 @media(max-width:700px){.intro-earth{width:130vw;right:-42%;bottom:-43%}.intro-stage{inset:4% -24% 0 -24%}.intro-caption{top:19%;left:8%;right:auto;width:80%}.intro-caption h2{font-size:clamp(54px,16vw,86px);margin:15px 0}.intro-caption p{max-width:250px;font-size:12px}.intro-brand{left:7%;top:5%;font-size:14px}.intro-skip{right:6%;top:4%;padding:9px 11px;font-size:8px}.intro-location{right:7%;bottom:5%;font-size:8px}.intro-orbit{width:120vw;height:50vw;left:-35%;top:42%}}
 @media(prefers-reduced-motion:reduce){.cinematic-intro:before,.intro-nebula,.intro-earth,.intro-orbit,.intro-progress span{animation:none}.intro-earth{opacity:1;transform:none}.intro-caption,.intro-brand,.intro-location{opacity:1;transform:none;animation:none}.cinematic-intro{transition:none}}
+
+
+/* Cinematic 3D journey: the scene itself now contains the Earth. */
+.intro-earth,.intro-orbit{display:none!important}
+.intro-nebula{opacity:.08}
+.intro-caption{display:none}
+.intro-location{display:none}
+.intro-stage{inset:0!important}
+#orbi3d{pointer-events:none}
+.cinematic-intro:after{z-index:4}
+.intro-brand{opacity:1;animation:none}
+.intro-skip{z-index:20}
+@media(max-width:700px){.intro-stage{inset:0!important}}
