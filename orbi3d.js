@@ -102,16 +102,27 @@ if (canvas && sceneHost) {
   earthGroup.position.set(1.65,-.35,-7.2);
   scene.add(earthGroup);
   const earthGeo = new THREE.SphereGeometry(3.05,96,96);
-  const earthMat = new THREE.MeshPhongMaterial({color:0xffffff,specular:new THREE.Color(0x244b70),shininess:18});
+  // Dark ocean fallback prevents the untextured sphere flashing pure white while maps load.
+  const earthMat = new THREE.MeshPhongMaterial({color:0x092b4d,specular:new THREE.Color(0x244b70),shininess:18});
   const earth = new THREE.Mesh(earthGeo,earthMat);
   earth.rotation.y = -1.25;
   earthGroup.add(earth);
-  textureLoader.load('https://raw.githubusercontent.com/mrdoob/three.js/dev/examples/textures/planets/earth_atmos_2048.jpg', t=>{t.colorSpace=THREE.SRGBColorSpace;earthMat.map=t;earthMat.needsUpdate=true;});
+  textureLoader.load(
+    'https://raw.githubusercontent.com/mrdoob/three.js/dev/examples/textures/planets/earth_atmos_2048.jpg',
+    t=>{t.colorSpace=THREE.SRGBColorSpace;earthMat.map=t;earthMat.color.set(0xffffff);earthMat.needsUpdate=true;},
+    undefined,
+    ()=>{earthMat.color.set(0x061b34);earthMat.needsUpdate=true;}
+  );
   textureLoader.load('https://raw.githubusercontent.com/mrdoob/three.js/dev/examples/textures/planets/earth_normal_2048.jpg', t=>{earthMat.normalMap=t;earthMat.normalScale.set(.55,.55);earthMat.needsUpdate=true;});
-  const cloudMat = new THREE.MeshPhongMaterial({color:0xffffff,transparent:true,opacity:.48,depthWrite:false});
+  const cloudMat = new THREE.MeshPhongMaterial({color:0xffffff,transparent:true,opacity:0,depthWrite:false});
   const clouds = new THREE.Mesh(new THREE.SphereGeometry(3.085,80,80),cloudMat);
   earthGroup.add(clouds);
-  textureLoader.load('https://raw.githubusercontent.com/mrdoob/three.js/dev/examples/textures/planets/earth_clouds_1024.png',t=>{cloudMat.map=t;cloudMat.alphaMap=t;cloudMat.needsUpdate=true;});
+  textureLoader.load(
+    'https://raw.githubusercontent.com/mrdoob/three.js/dev/examples/textures/planets/earth_clouds_1024.png',
+    t=>{cloudMat.map=t;cloudMat.alphaMap=t;cloudMat.opacity=.42;cloudMat.needsUpdate=true;},
+    undefined,
+    ()=>{cloudMat.opacity=0;cloudMat.needsUpdate=true;}
+  );
   const atmosphere = new THREE.Mesh(new THREE.SphereGeometry(3.19,80,80),new THREE.ShaderMaterial({
     vertexShader:`varying vec3 vNormal; void main(){vNormal=normalize(normalMatrix*normal);gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);}`,
     fragmentShader:`varying vec3 vNormal; void main(){float rim=pow(1.0-max(dot(normalize(vNormal),vec3(0.0,0.0,1.0)),0.0),3.0);gl_FragColor=vec4(0.12,0.52,1.0,rim*.72);}`,
