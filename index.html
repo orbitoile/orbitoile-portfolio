@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#050b19">
+  <meta name="description" content="Orbitoile — studio créatif digital à Lyon. Sites internet sur mesure, expériences numériques et SEO local.">
+  <title>Orbitoile — Digital experiences, beyond the ordinary</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <script defer src="app.js"></script>
+</head>
+<body>
+  <canvas id="starfield" aria-hidden="true"></canvas>
+  <div class="space-glow" aria-hidden="true"></div>
+  <div class="noise" aria-hidden="true"></div>
+
+  <header class="hud">
+    <a class="brand" href="#home" aria-label="Orbitoile, accueil">
+      <svg class="brand-mark" viewBox="0 0 56 56" aria-hidden="true"><ellipse cx="28" cy="28" rx="24" ry="10" transform="rotate(-32 28 28)" fill="none" stroke="currentColor" stroke-width="3"/><circle cx="28" cy="28" r="13" fill="none" stroke="currentColor" stroke-width="2"/><path d="M8 40 47 15" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>
+      <span>orbitoile<span class="brand-dot">.</span></span>
+    </a>
+    <div class="availability"><i></i><span>AVAILABLE FOR PROJECTS</span><b>·</b><span>LYON, FR</span></div>
+    <nav class="desktop-nav" aria-label="Navigation principale">
+      <a href="#work">Projets</a><a href="#approach">Approche</a><a href="#studio">Studio</a><a href="#contact">Contact</a>
+    </nav>
+    <div class="hud-actions">
+      <button class="sound-toggle" id="soundToggle" type="button" aria-pressed="false"><span class="sound-icon">◖</span><span>SON OFF</span></button>
+      <button class="menu-toggle" id="menuToggle" type="button" aria-label="Ouvrir le menu" aria-expanded="false"><span></span><span></span></button>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero" id="home">
+      <div class="hero-index mono"><span>PORTFOLIO / 2026</span><span>45°45' N — 4°50' E</span></div>
+      <div class="hero-copy">
+        <p class="eyebrow"><span class="eyebrow-line"></span> STUDIO CRÉATIF DIGITAL · LYON</p>
+        <h1>WE BUILD<br><em>DIGITAL</em><br>EXPERIENCES<span class="title-period">.</span></h1>
+        <p class="hero-intro">Des expériences numériques singulières.<br>Des sites qui ont une direction, une intention<br class="desktop-only"> et quelque chose à raconter.</p>
+        <div class="hero-cta">
+          <a class="button button-primary" href="#work">Explorer les projets <span>↗</span></a>
+          <a class="text-link" href="#approach"><span class="play-ring">↓</span> Descendre dans l'univers</a>
+        </div>
+      </div>
+
+      <div class="orbit-scene" aria-label="Illustration d'ORBI flottant dans l'espace">
+        <div class="planet-orbit orbit-a"></div><div class="planet-orbit orbit-b"></div>
+        <div class="planet planet-back"></div>
+        <div class="earth"><div class="earth-clouds"></div><div class="earth-lights"></div></div>
+        <div class="orbital-ring ring-one"></div><div class="orbital-ring ring-two"></div>
+        <div class="satellite sat-one"></div><div class="satellite sat-two"></div>
+        <div class="robot">
+          <div class="robot-aura"></div>
+          <div class="robot-ear ear-left"></div><div class="robot-ear ear-right"></div>
+          <div class="robot-head"><div class="visor"><span class="eye eye-left"></span><span class="eye eye-right"></span><span class="smile"></span></div><div class="helmet-shine"></div></div>
+          <div class="robot-neck"></div>
+          <div class="robot-body"><div class="chest-logo">◉</div><div class="chest-label">ORBI</div></div>
+          <div class="robot-arm arm-left"><div class="arm-joint"></div><div class="hand"><i></i><i></i><i></i><i></i></div></div>
+          <div class="robot-arm arm-right"><div class="arm-joint"></div><div class="hand"><i></i><i></i><i></i><i></i></div></div>
+          <div class="robot-leg leg-left"></div><div class="robot-leg leg-right"></div>
+        </div>
+        <div class="scene-coordinate mono">ORBI // EXPLORER-01</div>
+        <div class="scene-cross cross-one">+</div><div class="scene-cross cross-two">+</div>
+      </div>
+      <div class="hero-bottom mono"><span>SCROLL TO EXPLORE</span><span class="scroll-line"></span><span>01 — 04</span></div>
+      <div class="side-note mono">INDEPENDENT DIGITAL STUDIO <span>✳</span> EST. LYON</div>
+    </section>
+
+    <section class="manifesto section-wrap" id="approach">
+      <div class="section-kicker mono"><span>01 / PHILOSOPHIE</span><span>BEYOND THE TEMPLATE</span></div>
+      <div class="manifesto-grid">
+        <h2>Le digital n'a<br>pas besoin d'être<br><span>ordinaire.</span></h2>
+        <div class="manifesto-text"><p class="large-copy">Chaque projet mérite mieux qu'une mise en page interchangeable.</p><p>Orbitoile imagine et réalise des sites internet sur mesure, pensés pour raconter une activité, inspirer confiance et transformer une visite en prise de contact.</p><a class="arrow-link" href="#contact">Parlons de votre projet <span>↗</span></a></div>
+      </div>
+      <div class="orbit-line"><span></span><span></span><span></span></div>
+    </section>
+
+    <section class="work section-wrap" id="work">
+      <div class="section-kicker mono"><span>02 / SÉLECTION</span><span>FIELD NOTES — 2026</span></div>
+      <div class="section-heading"><h2>Projets en<br><span>orbite.</span></h2><p>Des univers conçus avec une intention claire.<br>Chaque détail a une raison d'être.</p></div>
+      <article class="project-card featured">
+        <div class="project-visual sentinel-visual">
+          <div class="visual-grid"></div><div class="sentinel-symbol"><span></span><span></span><span></span></div>
+          <div class="sentinel-wordmark">SENTINELLE<small>INVESTIGATIONS</small></div>
+          <div class="visual-corner mono">CASE FILE / 001</div><div class="visual-bottom mono">PRIVATE INVESTIGATION · LYON</div>
+        </div>
+        <div class="project-info"><div><p class="project-type mono">01 — WEB DESIGN / WORDPRESS / SEO</p><h3>Sentinelle<br>Investigations</h3><p class="project-desc">Une présence digitale sobre et affirmée pour une agence d'investigation privée à Lyon.</p></div><a class="round-arrow" href="https://sentinelle-investigations.fr/" target="_blank" rel="noreferrer" aria-label="Voir le site Sentinelle Investigations">↗</a></div>
+      </article>
+      <div class="project-note mono"><span>MORE MISSIONS INCOMING</span><span>02 / 04 — WORK IN PROGRESS</span></div>
+    </section>
+
+    <section class="capabilities section-wrap">
+      <div class="section-kicker mono"><span>03 / EXPERTISE</span><span>FROM CONCEPT TO LAUNCH</span></div>
+      <div class="capability-grid">
+        <div class="capability-intro"><h2>Du sens.<br>Du soin.<br><span>Du résultat.</span></h2><p>La technologie est un moyen. L'expérience et l'utilité restent le cap.</p></div>
+        <div class="capability-list">
+          <div class="capability"><span class="cap-number mono">01</span><div><h3>Création sur mesure</h3><p>Une identité digitale cohérente, une interface claire et un développement adapté au projet.</p></div><span class="cap-arrow">↗</span></div>
+          <div class="capability"><span class="cap-number mono">02</span><div><h3>Expérience & interface</h3><p>Des parcours intuitifs, accessibles et agréables sur ordinateur comme sur mobile.</p></div><span class="cap-arrow">↗</span></div>
+          <div class="capability"><span class="cap-number mono">03</span><div><h3>SEO local</h3><p>Une structure technique et éditoriale pensée pour rendre votre activité plus visible.</p></div><span class="cap-arrow">↗</span></div>
+          <div class="capability"><span class="cap-number mono">04</span><div><h3>Performance & sobriété</h3><p>Des pages rapides, légères et conçues pour aller à l'essentiel.</p></div><span class="cap-arrow">↗</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="studio section-wrap" id="studio">
+      <div class="section-kicker mono"><span>04 / LE STUDIO</span><span>SMALL BY DESIGN</span></div>
+      <div class="studio-panel"><div class="studio-orbit"><div class="studio-planet"></div><span class="studio-ring"></span><span class="studio-ring ring-alt"></span><b>O.</b></div><div class="studio-copy"><p class="eyebrow">INDEPENDENT · HUMAN-SIZED · LYON</p><h2>Un interlocuteur.<br><span>Une vision.</span></h2><p>Orbitoile est un studio web indépendant fondé à Lyon. De la première idée à la mise en ligne, le projet avance avec un interlocuteur unique et une attention portée aux détails qui comptent.</p><div class="studio-facts"><span><b>01</b> Échange direct</span><span><b>02</b> Sur mesure</span><span><b>03</b> Sans abonnement imposé</span></div></div></div>
+    </section>
+
+    <section class="contact section-wrap" id="contact">
+      <div class="section-kicker mono"><span>05 / PROCHAINE ORBITE</span><span>YOUR MOVE</span></div>
+      <div class="contact-inner"><p class="eyebrow">UNE IDÉE À FAIRE DÉCOLLER ?</p><h2>Let's make<br><span>it matter.</span></h2><a class="button button-primary" href="mailto:contact@orbitoile.fr">Démarrer une conversation <span>↗</span></a><p class="contact-location mono">LYON, FRANCE · WORKING EVERYWHERE</p></div>
+    </section>
+  </main>
+
+  <footer class="footer"><a class="brand footer-brand" href="#home"><svg class="brand-mark" viewBox="0 0 56 56" aria-hidden="true"><ellipse cx="28" cy="28" rx="24" ry="10" transform="rotate(-32 28 28)" fill="none" stroke="currentColor" stroke-width="3"/><circle cx="28" cy="28" r="13" fill="none" stroke="currentColor" stroke-width="2"/><path d="M8 40 47 15" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg><span>orbitoile<span class="brand-dot">.</span></span></a><span class="mono">© 2026 ORBITOILE — ALL SYSTEMS NOMINAL</span><a href="#home" class="back-top mono">BACK TO TOP ↑</a></footer>
+  <div class="scroll-meter" aria-hidden="true"><span id="scrollMeterFill"></span></div>
+  <div class="mobile-menu" id="mobileMenu"><a href="#work">Projets</a><a href="#approach">Approche</a><a href="#studio">Studio</a><a href="#contact">Contact</a></div>
+</body>
+</html>
