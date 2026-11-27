@@ -23,78 +23,144 @@ if (canvas && sceneHost) {
   const robot = new THREE.Group(); scene.add(robot);
   robot.scale.setScalar(.055);
   robot.position.set(-1.6, -.15, -5.5);
-  const white = new THREE.MeshStandardMaterial({ color: 0xe7f0fb, metalness: .48, roughness: .27 });
-  const whiteBright = new THREE.MeshStandardMaterial({ color: 0xffffff, metalness: .35, roughness: .2 });
-  const dark = new THREE.MeshStandardMaterial({ color: 0x071326, metalness: .7, roughness: .2 });
-  const blue = new THREE.MeshStandardMaterial({ color: 0x168fff, emissive: 0x087dff, emissiveIntensity: 2.4, metalness: .4, roughness: .2 });
-  const glow = new THREE.MeshBasicMaterial({ color: 0x39baff });
 
-  function sphere(parent, material, pos, scale, segments=32) {
-    const m = new THREE.Mesh(new THREE.SphereGeometry(1,segments,Math.max(16,segments/2)), material);
-    m.position.set(...pos); m.scale.set(...scale); parent.add(m); return m;
+  // ORBI — proportions and welcoming pose based on the supplied character reference.
+  const ceramic = new THREE.MeshPhysicalMaterial({color:0xf2f6ff,metalness:.28,roughness:.22,clearcoat:1,clearcoatRoughness:.12});
+  const ceramicShade = new THREE.MeshPhysicalMaterial({color:0xcbd8ec,metalness:.42,roughness:.25,clearcoat:1});
+  const joint = new THREE.MeshStandardMaterial({color:0x071326,metalness:.82,roughness:.2});
+  const jointMid = new THREE.MeshStandardMaterial({color:0x182b48,metalness:.8,roughness:.24});
+  const visor = new THREE.MeshPhysicalMaterial({color:0x010714,metalness:.7,roughness:.09,clearcoat:1,clearcoatRoughness:.03});
+  const neon = new THREE.MeshStandardMaterial({color:0x168fff,emissive:0x087dff,emissiveIntensity:2.8,metalness:.5,roughness:.18});
+  const neonLine = new THREE.MeshBasicMaterial({color:0x59d5ff});
+  const softGlow = new THREE.MeshBasicMaterial({color:0x087dff,transparent:true,opacity:.22});
+
+  function orb(parent,mat,pos,size,segments=40){
+    const m=new THREE.Mesh(new THREE.SphereGeometry(1,segments,Math.max(16,segments/2)),mat);
+    m.position.set(...pos);m.scale.set(...size);parent.add(m);return m;
   }
-  function cylinder(parent, material, a, b, radiusA, radiusB=radiusA, segments=24) {
-    const start = new THREE.Vector3(...a), end = new THREE.Vector3(...b);
-    const dir = new THREE.Vector3().subVectors(end,start);
-    const mesh = new THREE.Mesh(new THREE.CylinderGeometry(radiusB,radiusA,dir.length(),segments),material);
-    mesh.position.copy(start).add(end).multiplyScalar(.5);
-    mesh.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),dir.normalize()); parent.add(mesh); return mesh;
+  function link(parent,mat,a,b,r1,r2=r1){
+    const A=new THREE.Vector3(...a),B=new THREE.Vector3(...b),d=B.clone().sub(A);
+    const m=new THREE.Mesh(new THREE.CylinderGeometry(r2,r1,d.length(),32,1),mat);
+    m.position.copy(A).add(B).multiplyScalar(.5);
+    m.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),d.normalize());parent.add(m);return m;
+  }
+  function ring(parent,mat,pos,r,tube,rotation=[Math.PI/2,0,0]){
+    const m=new THREE.Mesh(new THREE.TorusGeometry(r,tube,12,64),mat);
+    m.position.set(...pos);m.rotation.set(...rotation);parent.add(m);return m;
+  }
+  function eyeArc(parent,x,y,z){
+    const pts=[];
+    for(let i=0;i<=24;i++){const a=Math.PI*(.08+i/24*.84);pts.push(new THREE.Vector3(x+Math.cos(a)*.19,y+Math.sin(a)*.19,z));}
+    const curve=new THREE.CatmullRomCurve3(pts);
+    const m=new THREE.Mesh(new THREE.TubeGeometry(curve,32,.035,10,false),neonLine);parent.add(m);
+    const halo=m.clone();halo.material=softGlow;halo.scale.set(1.7,1.7,1.7);parent.add(halo);
   }
 
-  // Rounded helmet and deep glass visor.
-  sphere(robot, white, [0,.95,0], [1.05,.88,.78], 48);
-  sphere(robot, dark, [0,.94,.64], [.88,.57,.25], 48);
-  const visorGlass = new THREE.MeshPhysicalMaterial({color:0x06172d,metalness:.65,roughness:.12,clearcoat:1,clearcoatRoughness:.05});
-  sphere(robot, visorGlass, [0,.94,.70], [.82,.51,.19], 48);
-  // Eye lights and subtle mouth indicator.
-  sphere(robot, blue, [-.34,1.02,.87], [.105,.18,.045], 24);
-  sphere(robot, blue, [.34,1.02,.87], [.105,.18,.045], 24);
-  cylinder(robot, glow, [-.12,.66,.85],[.12,.66,.85],.012,.012,12);
-  // Helmet crest.
-  sphere(robot, whiteBright, [0,1.72,-.02], [.48,.12,.48], 32);
-  // Blue illuminated side modules.
-  for (const x of [-1.03,1.03]) {
-    sphere(robot, white, [x,.98,0], [.2,.39,.27], 24);
-    sphere(robot, blue, [x*1.12,.98,.08], [.075,.22,.21], 24);
-    sphere(robot, glow, [x*1.16,.98,.1], [.025,.12,.13], 16);
+  // Helmet: broad rounded white shell, inset panoramic black visor and blue side hardware.
+  orb(robot,ceramic,[0,2.02,0],[.88,.78,.68],64);
+  orb(robot,ceramicShade,[0,2.68,-.02],[.48,.13,.43],40);
+  orb(robot,visor,[0,2.04,.535],[.735,.49,.205],64);
+  orb(robot,joint,[0,2.04,.49],[.76,.515,.19],64);
+  orb(robot,visor,[0,2.04,.56],[.72,.47,.19],64);
+  eyeArc(robot,-.29,2.08,.738);eyeArc(robot,.29,2.08,.738);
+  // Tiny friendly smile.
+  const smileCurve=new THREE.CatmullRomCurve3([new THREE.Vector3(-.10,1.78,.735),new THREE.Vector3(0,1.75,.75),new THREE.Vector3(.10,1.78,.735)]);
+  robot.add(new THREE.Mesh(new THREE.TubeGeometry(smileCurve,16,.009,8,false),neonLine));
+  // Helmet crown details and ear modules.
+  orb(robot,joint,[0,2.69,-.02],[.34,.055,.34],32);
+  orb(robot,ceramic,[0,2.70,-.02],[.30,.07,.30],32);
+  for(const s of [-1,1]){
+    orb(robot,joint,[s*.83,2.05,0],[.19,.39,.30],32);
+    orb(robot,ceramic,[s*.91,2.05,.02],[.15,.34,.29],32);
+    orb(robot,neon,[s*.99,2.05,.04],[.055,.27,.235],32);
+    orb(robot,neonLine,[s*1.025,2.05,.05],[.018,.20,.17],24);
+    ring(robot,joint,[s*.75,2.05,.01],.30,.035,[0,0,0]);
   }
-  // Neck, torso and shoulder shells.
-  cylinder(robot,dark,[0,.15,0],[0,.48,0],.22,.25);
-  sphere(robot, white, [0,-.55,0], [.78,.86,.52], 40);
-  sphere(robot, whiteBright, [-.69,-.12,0], [.3,.34,.34], 24);
-  sphere(robot, whiteBright, [.69,-.12,0], [.3,.34,.34], 24);
-  // Chest orbital emblem: ring + central planet.
-  const emblem = new THREE.Mesh(new THREE.TorusGeometry(.23,.025,10,64),blue);
-  emblem.position.set(0,-.43,.49); robot.add(emblem);
-  const emblem2 = new THREE.Mesh(new THREE.TorusGeometry(.32,.012,8,64),glow);
-  emblem2.position.set(0,-.43,.49); emblem2.rotation.z=-.55; emblem2.scale.y=.48; robot.add(emblem2);
-  sphere(robot, blue,[0,-.43,.51],[.075,.075,.035],20);
-
-  // Articulated arms, visible dark joints and blue wrist rings.
-  for (const side of [-1,1]) {
-    const shoulder=[side*.72,-.15,0], elbow=[side*1.02,-.75,.02], wrist=[side*1.28,-1.23,.12];
-    sphere(robot,dark,shoulder,[.22,.23,.22],24);
-    cylinder(robot,white,shoulder,elbow,.14,.12);
-    sphere(robot,dark,elbow,[.16,.16,.16],20);
-    cylinder(robot,white,elbow,wrist,.12,.095);
-    const cuff=new THREE.Mesh(new THREE.TorusGeometry(.115,.035,10,32),blue);
-    cuff.position.set(...wrist); cuff.rotation.x=Math.PI/2; robot.add(cuff);
-    sphere(robot,whiteBright,[side*1.31,-1.37,.15],[.16,.18,.13],20);
-    for(let f=0;f<4;f++){
-      const x=side*1.31+(f-1.5)*.065;
-      cylinder(robot,white,[x,-1.46,.17],[x+side*.015,-1.58+(Math.abs(f-1.5)*.025),.2],.027,.018,10);
+  // Neck and articulated collar.
+  link(robot,joint,[0,1.17,0],[0,1.48,0],.22,.19);
+  ring(robot,neon,[0,1.48,0],.22,.035);
+  // Chest armour, layered shoulder plates and dark flexible abdomen.
+  orb(robot,joint,[0,.28,-.015],[.59,.66,.42],48);
+  orb(robot,ceramic,[0,.48,.06],[.69,.75,.49],56);
+  orb(robot,ceramicShade,[0,.08,.20],[.59,.38,.38],48);
+  orb(robot,ceramic,[0,.91,.02],[.50,.19,.40],40);
+  // Glowing clavicle strip.
+  const collar=new THREE.Mesh(new THREE.TorusGeometry(.36,.025,10,64,Math.PI),neon);
+  collar.position.set(0,.98,.30);collar.rotation.set(Math.PI/2,0,Math.PI);robot.add(collar);
+  // Orbitoile planet-and-ring insignia.
+  const badge=new THREE.Group();badge.position.set(0,.43,.515);badge.rotation.x=-.08;robot.add(badge);
+  orb(badge,neon,[0,0,0],[.075,.075,.025],24);
+  ring(badge,neon,[0,0,.005],.25,.025,[.15,.12,0]);
+  const orbit2=ring(badge,neonLine,[0,0,.01],.31,.014,[.15,.12,-.55]);orbit2.scale.y=.48;
+  // Shoulder caps and dark rotary sockets.
+  for(const s of [-1,1]){
+    orb(robot,joint,[s*.72,.80,0],[.29,.34,.34],36);
+    orb(robot,ceramic,[s*.78,.87,.02],[.32,.30,.34],40);
+    orb(robot,ceramicShade,[s*.80,.91,.22],[.23,.20,.17],32);
+  }
+  // Waist and pelvis.
+  orb(robot,joint,[0,-.28,0],[.48,.42,.37],40);
+  orb(robot,jointMid,[0,-.38,.02],[.43,.30,.35],36);
+  orb(robot,ceramic,[0,-.58,.015],[.53,.39,.39],48);
+  // Arms are intentionally posed asymmetrically: one raised in greeting, one open.
+  function makeArm(points, raised){
+    const [shoulder,elbow,wrist]=points;
+    orb(robot,joint,shoulder,[.22,.23,.22],32);
+    ring(robot,joint,shoulder,.19,.045,[Math.PI/2,0,0]);
+    link(robot,ceramic,shoulder,elbow,.19,.145);
+    orb(robot,ceramic,[ (shoulder[0]+elbow[0])/2,(shoulder[1]+elbow[1])/2,(shoulder[2]+elbow[2])/2 ],[.19,.28,.19],32);
+    orb(robot,joint,elbow,[.16,.16,.16],28);
+    orb(robot,jointMid,elbow,[.12,.12,.12],24);
+    link(robot,ceramic,elbow,wrist,.145,.12);
+    orb(robot,ceramic,wrist,[.14,.19,.14],32);
+    ring(robot,neon,wrist,.145,.035,[Math.PI/2,0,0]);
+    // Palm plate and five individually segmented fingers.
+    const palm=[wrist[0],wrist[1]-.17,wrist[2]+.08];
+    orb(robot,ceramic,palm,[.22,.19,.105],32);
+    const dir=raised?1:-.12;
+    for(let i=0;i<4;i++){
+      const spread=(i-1.5)*.105;
+      const base=[palm[0]+spread,palm[1]+(raised?.08:-.02),palm[2]+.01];
+      const tip=[base[0]+spread*.22,base[1]+(raised?.34:.17)+Math.abs(i-1.5)*-.035,base[2]+.015];
+      link(robot,ceramic,base,tip,.045,.032);
+      orb(robot,jointMid,base,[.052,.052,.052],16);
+      orb(robot,ceramic,tip,[.037,.045,.038],16);
+      ring(robot,jointMid,[(base[0]+tip[0])/2,(base[1]+tip[1])/2,(base[2]+tip[2])/2],.035,.012,[Math.PI/2,0,0]);
     }
-    cylinder(robot,white,[side*.32,-1.18,0],[side*.34,-1.88,.03],.18,.15);
-    sphere(robot,dark,[side*.34,-1.2,0],[.19,.15,.18],20);
-    sphere(robot,whiteBright,[side*.36,-1.9,.12],[.2,.11,.29],20);
+    const thumbBase=[palm[0]+(raised?.18:-.18),palm[1]-.01,palm[2]+.01];
+    const thumbTip=[thumbBase[0]+(raised?.22:-.20),thumbBase[1]+.17,thumbBase[2]+.015];
+    link(robot,ceramic,thumbBase,thumbTip,.052,.035);
+    orb(robot,jointMid,thumbBase,[.06,.06,.06],16);
+    orb(robot,ceramic,thumbTip,[.04,.05,.04],16);
   }
-
-  // Thin floating orbital halo behind ORBI.
-  const haloMat = new THREE.MeshBasicMaterial({color:0x238fff,transparent:true,opacity:.65});
-  const halo = new THREE.Mesh(new THREE.TorusGeometry(1.7,.009,8,128),haloMat);
-  halo.position.set(0,.15,-.55); halo.rotation.set(.85,.2,-.4); robot.add(halo);
-  const halo2 = new THREE.Mesh(new THREE.TorusGeometry(1.95,.005,8,128),new THREE.MeshBasicMaterial({color:0x68d9ff,transparent:true,opacity:.28}));
-  halo2.position.set(0,.15,-.7); halo2.rotation.set(1.2,-.35,.2); robot.add(halo2);
+  makeArm([[-.72,.80,0],[-1.02,1.25,.02],[-1.08,1.68,.10]],true);
+  makeArm([[.72,.80,0],[1.04,.35,.02],[1.52,.34,.10]],false);
+  // Legs: dark rotary hips/knees beneath sculpted white shin and thigh shells.
+  for(const s of [-1,1]){
+    const hip=[s*.34,-.67,0],knee=[s*.40,-1.42,.02],ankle=[s*.43,-2.12,.04];
+    orb(robot,joint,hip,[.23,.27,.25],32);
+    link(robot,joint,hip,knee,.18,.16);
+    link(robot,ceramic, [s*.34,-.78,.02],[s*.39,-1.35,.10],.24,.20);
+    orb(robot,ceramic,[s*.37,-1.08,.09],[.25,.43,.25],40);
+    orb(robot,joint,knee,[.17,.17,.18],28);
+    orb(robot,neon,[s*.40,-1.10,.315],[.035,.20,.018],24);
+    link(robot,joint,knee,ankle,.14,.12);
+    link(robot,ceramic,[s*.40,-1.52,.02],ankle,.20,.16);
+    orb(robot,ceramic,[s*.42,-1.82,.09],[.21,.39,.23],40);
+    orb(robot,joint,ankle,[.16,.15,.17],24);
+    ring(robot,neon,[s*.43,-2.10,.04],.14,.025);
+    // White boot with dark sole and luminous blue perimeter.
+    orb(robot,joint,[s*.43,-2.20,.20],[.29,.13,.43],32);
+    orb(robot,ceramic,[s*.43,-2.16,.27],[.30,.18,.43],40);
+    orb(robot,ceramicShade,[s*.43,-2.25,.34],[.27,.08,.36],32);
+    const sole=ring(robot,neon,[s*.43,-2.28,.22],.29,.025);
+    sole.scale.set(1,.62,1);
+  }
+  // Subtle orbital accents behind the character, not around the silhouette.
+  const halo=new THREE.Mesh(new THREE.TorusGeometry(1.72,.008,8,128),new THREE.MeshBasicMaterial({color:0x238fff,transparent:true,opacity:.42}));
+  halo.position.set(0,.25,-.62);halo.rotation.set(.85,.2,-.4);robot.add(halo);
+  const halo2=new THREE.Mesh(new THREE.TorusGeometry(1.95,.005,8,128),new THREE.MeshBasicMaterial({color:0x68d9ff,transparent:true,opacity:.18}));
+  halo2.position.set(0,.25,-.72);halo2.rotation.set(1.2,-.35,.2);robot.add(halo2);
 
   // Photorealistic Earth layers, illuminated by a distant sun.
   const textureLoader = new THREE.TextureLoader();
