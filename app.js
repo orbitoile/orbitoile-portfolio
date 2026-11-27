@@ -15,7 +15,7 @@
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
       window.setTimeout(finishIntro, 900);
     } else {
-      window.setTimeout(finishIntro, 7900);
+      window.setTimeout(finishIntro, 10800);
     }
   }
   const canvas = document.getElementById('starfield');
