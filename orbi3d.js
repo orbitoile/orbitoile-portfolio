@@ -161,7 +161,7 @@ if (canvas && sceneHost) {
     // ORBI emerges from the dark, approaches the viewer, then leads the flight.
     const robotScale=.018+(.68-.018)*ease(Math.min(1,p/.56));
     robot.scale.setScalar(robotScale);
-    robot.position.set(-2.2+1.15*travel,-.15+.12*Math.sin(p*8),-5.8+7.5*travel);
+    robot.position.set(-2.2+1.15*travel,-.15+.12*Math.sin(p*8),-5.8+1.4*travel);
     robot.rotation.y+=(pointer.x*.18-robot.rotation.y)*.025;
     robot.rotation.x+=(-pointer.y*.08-robot.rotation.x)*.025;
     halo.rotation.z=elapsed*.00012;
