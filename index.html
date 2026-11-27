@@ -13,7 +13,18 @@
   <script defer src="app.js"></script>
   <script type="module" src="orbi3d.js"></script>
 </head>
-<body>
+<body class="intro-active">
+  <section class="cinematic-intro" id="cinematicIntro" aria-label="Introduction Orbitoile">
+    <div class="intro-nebula" aria-hidden="true"></div>
+    <div class="intro-earth" aria-hidden="true"><div class="intro-earth-clouds"></div><div class="intro-earth-glow"></div></div>
+    <div class="intro-orbit" aria-hidden="true"></div>
+    <div class="intro-stage"><canvas id="orbi3d" aria-label="ORBI, robot explorateur en trois dimensions"></canvas></div>
+    <div class="intro-brand"><span class="intro-brand-mark">◉</span> ORBITOILE</div>
+    <div class="intro-caption"><span class="intro-overline">UNE NOUVELLE ORBITE COMMENCE</span><h2>Suivez<br><em>ORBI.</em></h2><p>Notre destination : votre univers numérique.</p></div>
+    <div class="intro-location mono">TERRE · LYON, FRANCE</div>
+    <button class="intro-skip" id="introSkip" type="button">PASSER L’INTRO <span>↗</span></button>
+    <div class="intro-progress" aria-hidden="true"><span></span></div>
+  </section>
   <canvas id="starfield" aria-hidden="true"></canvas>
   <div class="space-glow" aria-hidden="true"></div>
   <div class="noise" aria-hidden="true"></div>
