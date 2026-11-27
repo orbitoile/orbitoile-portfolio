@@ -1,4 +1,23 @@
 (() => {
+  // Cinematic opening: automatically reveal the portfolio, with an accessible skip control.
+  const intro = document.getElementById('cinematicIntro');
+  const skipIntro = document.getElementById('introSkip');
+  if (intro) {
+    let closed = false;
+    const finishIntro = () => {
+      if (closed) return;
+      closed = true;
+      intro.classList.add('is-leaving');
+      document.body.classList.remove('intro-active');
+      window.setTimeout(() => intro.remove(), 1300);
+    };
+    skipIntro?.addEventListener('click', finishIntro);
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      window.setTimeout(finishIntro, 900);
+    } else {
+      window.setTimeout(finishIntro, 7900);
+    }
+  }
   const canvas = document.getElementById('starfield');
   const ctx = canvas.getContext('2d', { alpha: true });
   let stars = [], width = 0, height = 0, raf = 0;
